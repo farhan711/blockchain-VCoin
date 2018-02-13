@@ -54,3 +54,38 @@ class DatabaseProcess(Process):
             self._del(self.salt + str(args[0]))
         except:
             pass
+
+    def run(self):
+        import networking
+        import sys
+        if sys.platform == 'win32':
+            import bsddb
+            self.DB = bsddb.hashopen(self.database_name)
+            self._get = self.DB.__getitem__
+            self._put = self.DB.__setitem__
+            self._del = self.DB.__delitem__
+            self._close = self.DB.close
+        else:
+            import leveldb
+            self.DB = leveldb.LevelDB(self.database_name)
+            self._get = self.DB.Get
+            self._put = self.DB.Put
+            self._del = self.DB.Delete
+            self._close = _noop # leveldb doesn't have a close func
+        try:
+            self.salt = self._get('salt')
+        except KeyError:
+            self.salt = os.urandom(5)
+            self._put('salt', self.salt)
+        def command_handler(command):
+            try:
+                name = command['type']
+                assert (name not in ['__init__', 'run'])
+                return getattr(self, name)(command['args'])
+            except Exception as exc:
+                self.logf(exc)
+                self.logf('command: ' + str(command))
+                self.logf('command type: ' + str(type(command)))
+                return {'error':'bad data'}
+        networking.serve_forever(command_handler, self.port, self.heart_queue)
+        self._close()
