@@ -26,3 +26,17 @@ def genesis(pubkey, DB):
            'txs': [make_mint(pubkey, DB)]}
     out = tools.unpackage(tools.package(out))
     return out
+def make_block(prev_block, txs, pubkey, DB):
+    leng = int(prev_block['length']) + 1
+    target_ = target.target(leng)
+    diffLength = blockchain.hexSum(prev_block['diffLength'],
+                                   blockchain.hexInvert(target_))
+    out = {'version': custom.version,
+           'txs': txs + [make_mint(pubkey, DB)],
+           'length': leng,
+           'time': time.time(),
+           'diffLength': diffLength,
+           'target': target_,
+           'prevHash': tools.det_hash(prev_block)}
+    out = tools.unpackage(tools.package(out))
+    return out
