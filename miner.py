@@ -41,7 +41,7 @@ def make_block(prev_block, txs, pubkey, DB):
     out = tools.unpackage(tools.package(out))
     return out
 
-    
+
 def POW(block, restart_signal):
     halfHash = tools.det_hash(block)
     block[u'nonce'] = random.randint(0, 10000000000000000000000000000000000000000)
@@ -54,3 +54,11 @@ def POW(block, restart_signal):
             restart_signal.clear()
             return {'solution_found': True}
     return block
+
+def new_worker(solution_queue):
+    in_queue=multiprocessing.Queue()
+    restart=multiprocessing.Event()
+    proc = multiprocessing.Process(target=miner, args=(restart, solution_queue, in_queue))
+    proc.daemon=True
+    proc.start()
+    return({'in_queue':in_queue, 'restart':restart, 'solution_queue':solution_queue, 'proc':proc})
