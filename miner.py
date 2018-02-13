@@ -40,3 +40,17 @@ def make_block(prev_block, txs, pubkey, DB):
            'prevHash': tools.det_hash(prev_block)}
     out = tools.unpackage(tools.package(out))
     return out
+
+    
+def POW(block, restart_signal):
+    halfHash = tools.det_hash(block)
+    block[u'nonce'] = random.randint(0, 10000000000000000000000000000000000000000)
+    count = 0
+    while tools.det_hash({u'nonce': block['nonce'],
+                          u'halfHash': halfHash}) > block['target']:
+        count += 1
+        block[u'nonce'] += 1
+        if restart_signal.is_set():
+            restart_signal.clear()
+            return {'solution_found': True}
+    return block
