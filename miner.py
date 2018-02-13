@@ -87,3 +87,27 @@ def main(pubkey, DB):
     except Exception as exc:
         tools.log('miner main: ')
         tools.log(exc)
+
+def main_once(pubkey, DB, num_cores, solution_queue, workers):
+    length=tools.db_get('length')
+    if length==-1:
+        candidate_block = genesis(pubkey, DB)
+    else:
+        prev_block = tools.db_get(length, DB)
+        try:
+            candidate_block = make_block(prev_block, tools.db_get('txs'), pubkey, DB)
+        except:#sometimes a block gets deleted after we grab length and before we call make_block.
+            return main_once(pubkey, DB, num_cores, solution_queue, workers)
+    work = candidate_block
+    for worker in workers:
+        worker['in_queue'].put(work)
+        worker['in_queue'].put(work)
+    start=time.time()
+    while solution_queue.empty() and time.time()<start+custom.blocktime/3 and tools.db_get('mine') and not tools.db_get('stop'):
+        time.sleep(0.1)
+    restart_workers(workers)
+    while not solution_queue.empty():
+        try:
+            DB['suggested_blocks'].put(solution_queue.get(False))
+        except:
+            continue
