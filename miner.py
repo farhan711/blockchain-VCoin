@@ -111,3 +111,21 @@ def main_once(pubkey, DB, num_cores, solution_queue, workers):
             DB['suggested_blocks'].put(solution_queue.get(False))
         except:
             continue
+def miner(restart, solution_queue, in_queue):
+    while True:
+        #try:
+        if tools.db_get('stop'): 
+            tools.log('shutting off miner')
+            return
+        if not(in_queue.empty()):
+            candidate_block=in_queue.get()#False)
+        else:
+            time.sleep(1)
+            continue
+        possible_block = POW(candidate_block, restart)
+        if 'error' in possible_block: 
+            continue
+        elif 'solution_found' in possible_block: 
+            continue
+        else:
+            solution_queue.put(possible_block)
