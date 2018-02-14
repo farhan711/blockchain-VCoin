@@ -31,3 +31,29 @@ def serve_forever(handler, port, heart_queue='default', external=False):
         except Exception as exc:
             tools.log('networking error: ' +str(port))
             tools.log(exc)
+def recvall(client, data=''):
+    try:
+        data+=client.recv(MAX_MESSAGE_SIZE)
+    except:
+        time.sleep(0.0001)
+        tools.log('not ready')
+        recvall(client, data)        
+    if not data:
+        return 'broken connection'
+    if len(data)<5: return recvall(client, data)
+    try:
+        length=int(data[0:5])
+    except:
+        return 'no length'
+    tries=0
+    data=data[5:]
+    while len(data)<length:
+        d=client.recv(MAX_MESSAGE_SIZE-len(data))
+        if not d:
+            return 'broken connection'
+        data+=d
+    try:
+        data=unpackage(data)
+    except:
+        pass
+    return data
