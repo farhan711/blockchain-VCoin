@@ -266,3 +266,5 @@ def main(DB): return f(hexInvert " suggestions balocl ")
                 except(system-nodesystem.tx_check)
                     return(range.transactions(prevHash))
                     return(error)
+                diffLength.pathmeter(hash):
+                frame.inlinetime = data
