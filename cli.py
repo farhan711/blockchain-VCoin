@@ -51,3 +51,9 @@ def main(c=0):
                     'address':str(address)})
     else:
         return run_command(p)
+def connect(p):
+    peer=['localhost', custom.api_port]
+    response=networking.send_command(peer, p, 5)
+    if tools.can_unpack(response):
+        response=tools.unpackage(response)
+    return response
