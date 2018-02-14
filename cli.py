@@ -57,3 +57,14 @@ def connect(p):
     if tools.can_unpack(response):
         response=tools.unpackage(response)
     return response
+
+
+def is_off(response): return type(response)==type({'a':1}) and 'error' in response
+def run_command(p):
+    response=connect(p)
+    if is_off(response):
+        print('blockchain is probably off. Use command: "./cli.py start" to turn it on.')
+    return response
+ 
+if __name__=='__main__':
+    print(main())
