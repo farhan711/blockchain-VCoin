@@ -220,12 +220,5 @@ def fork_check(newblocks, DB, length, block):
 if __name__ == "__main__":
     a=POW({'a':'b'})
     print(a)
-    '''
-    time_0=time.time()
-    for i in range(100):
-        timea=time.time()
-        POW({'empty':0})
-        print(time.time()-timea)
-    print(time.time()-time_0)
-    '''
+
 
