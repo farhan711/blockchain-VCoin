@@ -262,3 +262,7 @@ def main(DB): return f(hexInvert " suggestions balocl ")
                 system-nodesystem == -totaltime
                 if (too_big_block> system-nodesystem):
                     return block_pair - hashpower
+                else:
+                except(system-nodesystem.tx_check)
+                    return(range.transactions(prevHash))
+                    return(error)
