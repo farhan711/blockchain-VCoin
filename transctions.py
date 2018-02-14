@@ -66,3 +66,19 @@ def mint_verify(tx, txs, out, DB):
 tx_check = {'spend':spend_verify,
             'mint':mint_verify}
 #------------------------------------------------------
+adjust_int=tools.adjust_int
+adjust_dict=tools.adjust_dict
+adjust_list=tools.adjust_list
+symmetric_put=tools.symmetric_put
+def mint(tx, DB, add_block):
+    address = tools.addr(tx)
+    adjust_int(['amount'], address, custom.block_reward, DB, add_block)
+    adjust_int(['count'], address, 1, DB, add_block)
+def spend(tx, DB, add_block):
+    address = tools.addr(tx)
+    adjust_int(['amount'], address, -tx['amount'], DB, add_block)
+    adjust_int(['amount'], tx['to'], tx['amount'], DB, add_block)
+    adjust_int(['amount'], address, -custom.fee, DB, add_block)
+    adjust_int(['count'], address, 1, DB, add_block)
+update = {'mint':mint,
+          'spend':spend}
