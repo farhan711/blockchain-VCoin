@@ -91,3 +91,13 @@ def bip32_deserialize(data):
     chaincode = dbin[13:45]
     key = dbin[46:78]+'\x01' if vbytes == PRIVATE else dbin[45:78]
     return (vbytes, depth, fingerprint, i, chaincode, key)
+
+def raw_bip32_privtopub(rawtuple):
+    vbytes, depth, fingerprint, i, chaincode, key = rawtuple
+    return (PUBLIC, depth, fingerprint, i, chaincode, privtopub(key))
+
+def bip32_privtopub(data):
+    return bip32_serialize(raw_bip32_privtopub(bip32_deserialize(data)))
+
+def bip32_ckd(data,i):
+    return bip32_serialize(raw_
