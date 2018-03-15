@@ -34,5 +34,3 @@ DB = {
     'suggested_txs': multiprocessing.Queue(),
     'heart_queue': multiprocessing.Queue(),
 }
-
-
