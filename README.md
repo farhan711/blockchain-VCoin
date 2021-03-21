@@ -15,10 +15,3 @@ cd blockchain-VCoin
 
 python2.7 cli.py start ```
 
-
-[It will take time to start]
-
-## If you want to talk with node
-
-``` python2.7 cli.py ```
- 
