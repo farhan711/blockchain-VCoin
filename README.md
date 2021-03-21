@@ -13,5 +13,5 @@ git clone https://github.com/farhan711/blockchain-VCoin.git
 
 cd blockchain-VCoin
 
-python2.7 cli.py start```
+python2.7 cli.py start
 
